@@ -1,0 +1,33 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    -ms-overflow-style: none;  /*IE and Edge */
+    scrollbar-width: none; /*Firefox */
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.webgl
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    outline: none;
+}
+
+
+canvas { 
+    /* position: fixed; */
+    top: 0;
+}
+
+section {
+   height: 500vh;
+}
