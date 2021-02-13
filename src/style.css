@@ -8,6 +8,7 @@
 body {
     -ms-overflow-style: none;  /*IE and Edge */
     scrollbar-width: none; /*Firefox */
+    overflow-y:hidden;
 }
 
 body::-webkit-scrollbar {
@@ -30,4 +31,36 @@ canvas {
 
 section {
    height: 500vh;
+}
+
+.loader { 
+    width: 40vmin;
+	position: absolute;
+    z-index: 100;
+    top: calc(50% - 20vmin);
+    left: calc(50% - 20vmin);
+}
+
+.progress {
+    stroke: white;
+    stroke-width:1px;
+    stroke-dasharray: 100;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    stroke-dashoffset:100;
+    transition: stroke-dashoffset 0.5s;
+    -webkit-transition: stroke-dashoffset 0.5s;
+    -moz-transition: stroke-dashoffset 0.5s;
+    -ms-transition: stroke-dashoffset 0.5s;
+    -o-transition: stroke-dashoffset 0.5s;
+}
+
+.spaceship {
+    position: absolute;
+    stroke: white;
+    fill: white;
+    width: 15vmin;
+    top: calc(50% - 5vmin);
+    left: calc(50% - 7vmin);
+    z-index: 100;
 }

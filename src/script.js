@@ -2,6 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as dat from 'dat.gui'
+import { gsap } from 'gsap'
 
 
 let scrollAmout = window.scrollY;
@@ -23,9 +24,33 @@ gui.hide()
 const canvas = document.querySelector('canvas.webgl')
 
 /**
+ * Loader Manager
+ */
+const body = document.querySelector('body') 
+const loaderElement = document.querySelector('.progress') 
+const spaceship = document.querySelector('.spaceship') 
+const loadingManager = new THREE.LoadingManager(
+    // Loaded
+    () =>
+    {
+        setTimeout(() => {
+            gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 })
+            loaderElement.style.opacity = 0
+            spaceship.style.opacity = 0
+            body.style.overflowY = 'visible'
+        }, 500)
+    },
+
+    // Progress
+    (itemUrl, itemsLoaded, itemsTotal) =>
+    {
+        loaderElement.style.strokeDashoffset = 100 - (itemsLoaded / itemsTotal) * 100;
+    }
+)
+/**
  * Textures
  */
-const texturesLoader = new THREE.TextureLoader()
+const texturesLoader = new THREE.TextureLoader(loadingManager)
 const background = texturesLoader.load('/textures/moon.jpeg')
 
 // Scene
@@ -37,7 +62,7 @@ scene.background = background
  * Models
  */
 
-const gltfLoader = new GLTFLoader()
+const gltfLoader = new GLTFLoader(loadingManager)
 gltfLoader.load(
     '/models/Astronaut/scene.gltf',
     (gltf) => {
@@ -60,6 +85,36 @@ gltfLoader.load(
         });
     }
 )
+
+/**
+ * Overlay
+ */
+const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)
+const overlayMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    vertexShader: `
+        void main()
+        {
+            gl_Position = vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+    uniform float uAlpha;
+        void main()
+        {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+        }
+    `,
+    uniforms:
+    {
+        uAlpha: { value: 1 }
+    },
+})
+const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
+scene.add(overlay)
+
+
+
 
 /**
  * Thumnails
@@ -231,8 +286,6 @@ function getIntersects(x, y) {
 }
 
 const clock = new THREE.Clock()
-
-console.log(thumbnailsMesh); 
 
 const tick = () => {
 
